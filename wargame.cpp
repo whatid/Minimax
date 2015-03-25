@@ -45,17 +45,19 @@ int main(int argc, char *argv[]) {
 	// blue moves first 
 
 	Pos none; 
-	minimax(matrix, playerboard, true, none, 3);
+	minimax(matrix, playerboard, true, none, 2);
 
-	cout << "no segfault in minimax";
+	cout << "no segfault in minimax" << endl; ;
 
 	// print out the final state of the board. 
 	for (int x = 0; x < 6; x++) {
 		for (int y = 0; y < 6; y++) {
 			if (playerboard[x][y] == blue)
 				cout<<"blue "; 
-			else 
+			else if (playerboard[x][y] == green) 
 				cout<<"green ";
+			else 
+				cout<<"empty ";
 		}
 		cout << "\n";
 	}
@@ -65,7 +67,7 @@ int main(int argc, char *argv[]) {
 int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) {
 
 	// declare variables 
-	int result, bestValue, x, y, maxOptimal, bx, by; 
+	int result, maxScore, minScore, x, y, maxOptimal, bx, by; 
 	bool finished = true; 
 	Pos latest; 
 
@@ -79,12 +81,16 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 			}
 		}
 	}
-	if (finished || depth == 0)
+	cout<<__LINE__<<endl; 
+	if (finished || depth == 0) {
+		cout<< "reached base case" <<endl; 
+		cout << prev.x << "prev.x" << prev.y << endl; 
+		// i think i need to pass position by reference 
 		return score[prev.x][prev.y];
-
+	}
 
 	if(maxPlayer) {
-		bestValue = -infinity; 
+		maxScore = -infinity; 
 		
 		// all possible moves for max
 		for (x = 0; x < 6; x++) {
@@ -96,29 +102,40 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 					latest.y = y; 
 				} 
 				// check neighboring squares for possible death blitz move
-				if(board[x-1][y] == blue || board[x+1][y] == blue || board[x][y-1] == blue || board[x][y+1] == blue) {
+				// check left/right
+				if (x > 0 && x < 5) {
+					if(board[x-1][y] == blue || board[x+1][y] == blue) {
 
-					if (board[x-1][y] == green) board[x-1][y] = blue; 
-					if (board[x+1][y] == green) board[x+1][y] = blue; 
-					if (board[x][y-1] == green) board[x][y-1] = blue; 
-					if (board[x][y+1] == green) board[x][y+1] = blue; 
+						if (board[x-1][y] == green) board[x-1][y] = blue; 
+						if (board[x+1][y] == green) board[x+1][y] = blue; 
+					
+					}
+				}		
+				// check top/bottom
+				if (y > 0 && y < 5) {
+					if (board[x][y-1] == blue || board[x][y+1] == blue) {
+
+						if (board[x][y-1] == green) board[x][y-1] = blue; 
+						if (board[x][y+1] == green) board[x][y+1] = blue; 
+
+					}
 				}
 
 				// do this recursively
 				result = minimax(score, board, false, latest, depth-1);
 
 				// check if my value is greater than any of the bestValues found so far. 
-				if (result > bestValue) {
-					bestValue = result;  
+				if (result > maxScore) {
+					maxScore = result;  
 				}
 			}
 		}
 
-		return bestValue; 
+		return maxScore; 
 	}
 
 	else {
-		bestValue = infinity; 
+		minScore = infinity; 
 
 		// all possible moves for min
 		for (x = 0; x < 6; x++) {
@@ -131,22 +148,33 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 
 				} 
 				// check neighboring squares for possible death blitz move
-				if(board[x-1][y] == green || board[x+1][y] == green || board[x][y-1] == green || board[x][y+1] == green) {
+				if (x > 0 && x < 5) {
+					if(board[x-1][y] == green || board[x+1][y] == green) {
 
-					if (board[x-1][y] == blue) board[x-1][y] = green; 
-					if (board[x+1][y] == blue) board[x+1][y] = green; 
-					if (board[x][y-1] == blue) board[x][y-1] = green; 
-					if (board[x][y+1] == blue) board[x][y+1] = green; 
+						if (board[x-1][y] == blue) board[x-1][y] = green; 
+						if (board[x+1][y] == blue) board[x+1][y] = green; 
+						
+					}
 				}
+				
+				if (y > 0 && y < 5) {
+					if(board[x][y-1] == green || board[x][y+1] == green) {
 
+						if (board[x][y-1] == blue) board[x][y-1] = green; 
+						if (board[x][y+1] == blue) board[x][y+1] = green; 
+
+					}
+				}	
+
+				// recursion!!!!!
 				result = minimax(score, board, true, latest, depth-1);
 
-				if (result < bestValue) {
-					bestValue = result;  
+				if (result < minScore) {
+					minScore = result;  
 				}
 			}
 		}
-		return bestValue; 
+		return minScore; 
 	}
 	
 }
