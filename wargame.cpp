@@ -44,32 +44,46 @@ int main(int argc, char *argv[]) {
 	// max = blue 
 	// blue moves first 
 
-	Pos none; 
-	minimax(matrix, playerboard, true, none, 2);
+	// test 
+	minimax(matrix, playerboard, true, 0, 3, 3);
 
-	cout << "no segfault in minimax" << endl; ;
 
-	// print out the final state of the board. 
+	// play game 
+/*
+	for (int move = 0; move < 36; move++) {
+		if (move % 2 == 0)
+			minimax(matrix, playerboard, true, none, 3, 3); 
+		else 
+			minimax(matrix, playerboard, false, none, 3, 3);
+	}
+*/	
+	
+
+	cout << "no segfault in minimax" << endl; 
+
+
+	// print out the state of the board. 
 	for (int x = 0; x < 6; x++) {
 		for (int y = 0; y < 6; y++) {
 			if (playerboard[x][y] == blue)
-				cout<<"blue "; 
+				cout << "blue  "; 
 			else if (playerboard[x][y] == green) 
-				cout<<"green ";
+				cout << "green ";
 			else 
 				cout<<"empty ";
 		}
 		cout << "\n";
 	}
+	
 
 }
 
-int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) {
+int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth) {
 
 	// declare variables 
-	int result, maxScore, minScore, x, y, maxOptimal, bx, by; 
+	int result, maxScore, minScore, x, y, bx, by; 
 	bool finished = true; 
-	Pos latest; 
+	bool left = false, right = false, top = false, bottom = false; 
 
 	// base case
 	// board is full 
@@ -81,13 +95,10 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 			}
 		}
 	}
-	cout<<__LINE__<<endl; 
+	//cout<<__LINE__<<endl; 
 	if (finished || depth == 0) {
-		cout<< "reached base case" <<endl; 
-		cout << prev.x << "prev.x" << prev.y << endl; 
-		// i think i need to pass position by reference 
-		// prev.x and prev.y is garbage 
-		return score[prev.x][prev.y];
+		//cout<< "reached base case" <<endl; 
+		return leaf_node;
 	}
 
 	if(maxPlayer) {
@@ -98,37 +109,56 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 			for (y = 0; y < 6; y++) {
 				// pick a square that is empty and conquer it
 				if (board[x][y] == empty) {
-					board[x][y] = blue; 
-					latest.x = x; 
-					latest.y = y; 
+					board[x][y] = blue; 		
 				} 
 				// check neighboring squares for possible death blitz move
 				// check left/right
 				if (x > 0 && x < 5) {
 					if(board[x-1][y] == blue || board[x+1][y] == blue) {
 
-						if (board[x-1][y] == green) board[x-1][y] = blue; 
-						if (board[x+1][y] == green) board[x+1][y] = blue; 
-					
+						if (board[x-1][y] == green){
+							left = true; 
+							board[x-1][y] = blue; 
+						} 
+						if (board[x+1][y] == green) {
+							right = true; 
+							board[x+1][y] = blue; 
+						}
 					}
 				}		
 				// check top/bottom
 				if (y > 0 && y < 5) {
 					if (board[x][y-1] == blue || board[x][y+1] == blue) {
 
-						if (board[x][y-1] == green) board[x][y-1] = blue; 
-						if (board[x][y+1] == green) board[x][y+1] = blue; 
-
+						if (board[x][y-1] == green){
+							bottom = true; 
+							board[x][y-1] = blue; 
+						} 
+						if (board[x][y+1] == green) {
+							top = true; 
+							board[x][y+1] = blue; 
+						}
 					}
 				}
 
 				// do this recursively
-				result = minimax(score, board, false, latest, depth-1);
+				result = minimax(score, board, false, score[x][y], depth, depth-1);
+
+				// undo move
+				board[x][y] = empty; 
+				if (left) board[x-1][y] = green; 
+				if (right) board[x+1][y] = green; 
+				if (top) board[x][y+1] = green; 
+				if (bottom) board[x][y-1] = green; 
 
 				// check if my value is greater than any of the bestValues found so far. 
 				if (result > maxScore) {
 					maxScore = result;  
-				}
+					if (depth == maxDepth) {
+						// place my move on the board. 
+						board[x][y] = blue; 
+					}	
+				}	
 			}
 		}
 
@@ -144,34 +174,53 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 				// pick a square that is empty and conquer it
 				if (board[x][y] == empty) {
 					board[x][y] = green; 
-					latest.x = x; 
-					latest.y = y; 
-
 				} 
 				// check neighboring squares for possible death blitz move
 				if (x > 0 && x < 5) {
 					if(board[x-1][y] == green || board[x+1][y] == green) {
 
-						if (board[x-1][y] == blue) board[x-1][y] = green; 
-						if (board[x+1][y] == blue) board[x+1][y] = green; 
-						
+						if (board[x-1][y] == blue) {
+							left = true; 
+							board[x-1][y] = green; 
+						} 
+						if (board[x+1][y] == blue) {
+							right = true; 
+							board[x+1][y] = green; 
+						}
 					}
 				}
 				
 				if (y > 0 && y < 5) {
 					if(board[x][y-1] == green || board[x][y+1] == green) {
 
-						if (board[x][y-1] == blue) board[x][y-1] = green; 
-						if (board[x][y+1] == blue) board[x][y+1] = green; 
+						if (board[x][y-1] == blue) {
+							bottom = true; 
+							board[x][y-1] = green; 
+						}
+						if (board[x][y+1] == blue){
+							top = true; 
+							board[x][y+1] = green; 
+						} 
 
 					}
 				}	
 
 				// recursion!!!!!
-				result = minimax(score, board, true, latest, depth-1);
+				result = minimax(score, board, true, score[x][y], depth, depth-1);
+
+				//undo moves
+				board[x][y] = empty; 
+				if (left) board[x-1][y] = blue; 
+				if (right) board[x+1][y] = blue; 
+				if (top) board[x][y+1] = blue; 
+				if (bottom) board[x][y-1] = blue; 
 
 				if (result < minScore) {
 					minScore = result;  
+					if (depth == maxDepth) {
+						// place move on the board
+						board[x][y] = green; 
+					}
 				}
 			}
 		}
