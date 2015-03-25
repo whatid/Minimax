@@ -86,6 +86,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, Pos prev, int depth) 
 		cout<< "reached base case" <<endl; 
 		cout << prev.x << "prev.x" << prev.y << endl; 
 		// i think i need to pass position by reference 
+		// prev.x and prev.y is garbage 
 		return score[prev.x][prev.y];
 	}
 
