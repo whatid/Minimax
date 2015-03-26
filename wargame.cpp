@@ -96,9 +96,29 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 		}
 	}
 	//cout<<__LINE__<<endl; 
-	if (finished || depth == 0) {
-		//cout<< "reached base case" <<endl; 
+	if (finished) {
 		return leaf_node;
+	}
+	else {
+		// evaluation counts the total number of squares conquered by either max or min
+		// and the resulting score and compares that with the other player. 
+		// percentage likelihood of winning. 
+		// return result of eval function 
+		int curMax = 0, curMin = 0; 
+		if (depth == 0) {
+			for (int i = 0; i < 6; i++) {
+				for (int j = 0; j < 6; j++) {
+					if (board[x][y] == blue)
+						curMax += score[x][y]; 
+					if (board[x][y] == green)
+						curMin += score[x][y]; 	
+				}
+			}
+			if (maxPlayer) 
+				return (curMax-curMin);
+			else 
+				return (curMin-curMax); 
+		}
 	}
 
 	if(maxPlayer) {

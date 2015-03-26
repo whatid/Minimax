@@ -21,7 +21,7 @@ typedef enum square
 // minimax bot 
 int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth); 
 
-	
+// define evaluation function 	
 
 
 #endif
