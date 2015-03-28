@@ -45,8 +45,8 @@ int main(int argc, char *argv[]) {
 	// blue moves first 
 
 	// test 
-	minimax(matrix, playerboard, true, 0, 3, 3);
-
+	int wtf = minimax(matrix, playerboard, true, 0, 3, 3);
+	cout << wtf; 
 
 	// play game 
 /*
@@ -104,14 +104,14 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 		// and the resulting score and compares that with the other player. 
 		// percentage likelihood of winning. 
 		// return result of eval function 
-		int curMax = 0, curMin = 0; 
 		if (depth == 0) {
+			int curMax = 0, curMin = 0; 
 			for (int i = 0; i < 6; i++) {
 				for (int j = 0; j < 6; j++) {
-					if (board[x][y] == blue)
-						curMax += score[x][y]; 
-					if (board[x][y] == green)
-						curMin += score[x][y]; 	
+					if (board[i][j] == blue)
+						curMax += score[i][j]; 
+					if (board[i][j] == green)
+						curMin += score[i][j]; 	
 				}
 			}
 			if (maxPlayer) 
@@ -176,6 +176,8 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					maxScore = result;  
 					if (depth == maxDepth) {
 						// place my move on the board. 
+						cout << "max move";
+						cout << maxScore; 
 						board[x][y] = blue; 
 					}	
 				}	
@@ -239,6 +241,8 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					minScore = result;  
 					if (depth == maxDepth) {
 						// place move on the board
+						cout << "min move";
+						cout << minScore; 
 						board[x][y] = green; 
 					}
 				}
@@ -248,4 +252,3 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 	}
 	
 }
-
