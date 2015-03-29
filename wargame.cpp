@@ -45,17 +45,21 @@ int main(int argc, char *argv[]) {
 	// blue moves first 
 
 	// test 
-	minimax(matrix, playerboard, true, 0, 3, 3);
+//	for (int moves = 0; moves < 36; moves++){
+//		if (moves % 2 == 0) {
+			// max moves
+			minimax(matrix, playerboard, true, 0, 3, 3);
+			playerboard[maxOptimalX][maxOptimalY] = blue; 
+			// print out the state of the board. 
+//		}
+//		else {
+			// min moves
+			minimax(matrix, playerboard, false, 0, 3, 3); 
+			cout<<minOptimalX<<minOptimalY; 
+			playerboard[minOptimalX][minOptimalY] = green; 
+//		}
+//	}
 
-	// play game 
-/*
-	for (int move = 0; move < 36; move++) {
-		if (move % 2 == 0)
-			minimax(matrix, playerboard, true, none, 3, 3); 
-		else 
-			minimax(matrix, playerboard, false, none, 3, 3);
-	}
-*/	
 	
 
 	cout << "no segfault in minimax" << endl; 
@@ -124,12 +128,11 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 		}
 	}
 
-	if(maxPlayer) {
-		maxScore = -infinity; 
-		
+	for (x = 0; x < 6; x++) {
+		for (y = 0; y < 6; y++) {
 		// all possible moves for max
-		for (x = 0; x < 6; x++) {
-			for (y = 0; y < 6; y++) {
+			if(maxPlayer) {
+				maxScore = -infinity; 
 				// pick a square that is empty and conquer it
 				if (board[x][y] == empty) {
 					board[x][y] = blue; 		
@@ -243,24 +246,16 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (depth == maxDepth) {
 						// place my move on the board. 
 						//cout << "max move";
-						board[x][y] = blue; 
-						return maxScore; 
+						maxOptimalX = x; 
+						maxOptimalY = y; 
 					}	
 				}	
 			}
-		}
-		// this return is if you want to traverse the entire tree. In our case, we just want to return after 
-		// a fixed depth, so we return early. Bug found!
-		//return maxScore; 
-	}
 
-	else {
-		//cout << "shouldn't come here"; 
-		minScore = infinity; 
+			else {
+				//cout << "shouldn't come here"; 
+				minScore = infinity; 
 
-		// all possible moves for min
-		for (x = 0; x < 6; x++) {
-			for (y = 0; y < 6; y++) {
 				// pick a square that is empty and conquer it
 				if (board[x][y] == empty) {
 					board[x][y] = green; 
@@ -373,14 +368,22 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (depth == maxDepth) {
 						// place move on the board
 						//cout << "min move";
-						board[x][y] = green; 
-						return minScore; 
+						minOptimalX = x; 
+						minOptimalY = y;  
+						cout<<minOptimalX<<minOptimalY; 
 					}
 				}
 			}
 		}
-		//return minScore; 
 	}
-	
-	
+	if (maxPlayer) {
+		//board[maxOptimalX][maxOptimalY] = blue; 
+		//cout << maxScore; 
+		return maxScore; 
+	}
+	else {
+		//board[minOptimalX][minOptimalY] = green; 
+		//cout << minScore; 
+		return minScore; 
+	}
 }
