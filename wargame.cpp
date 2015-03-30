@@ -44,26 +44,40 @@ int main(int argc, char *argv[]) {
 	// max = blue 
 	// blue moves first 
 
+	clock_t start; 
+	double duration; 
+	double time_per_move; 
+	int nodes_expanded_max = 0, nodes_expanded_min = 0; 
+
 	// test 
 	for (int moves = 0; moves < 36; moves++){
 		if (moves % 2 == 0) {
 			// max moves
-			minimax(matrix, playerboard, true, 0, 3, 3);
+			start = clock(); 
+			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_max);
+		
+			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
+			time_per_move += duration; 
+
 			playerboard[maxOptimalX][maxOptimalY] = blue; 
 
 			// print out the state of the board. 
 		}
 		else {
 			// min moves
-			minimax(matrix, playerboard, true, 0, 3, 3); 
+			start = clock(); 
+			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
 //			cout<<minOptimalX<<minOptimalY; 
+			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
+			time_per_move += duration; 
+
 			playerboard[maxOptimalX][maxOptimalY] = green; 
 		}
 	}
 
 	
 
-	cout << "no segfault in minimax" << endl; 
+	//cout << "no segfault in minimax" << endl; 
 
 
 	// print out the state of the board. 
@@ -90,9 +104,17 @@ int main(int argc, char *argv[]) {
 
 	cout << "blue score: " << max_score << "\n"; 
 	cout << "green score: " << min_score << "\n"; 
+
+	cout << "average time per move: " << (time_per_move/36) * 1000 << " milliseconds" << "\n";
+
+	cout << "total nodes expanded for blue: " << nodes_expanded_max << "\n";
+	cout << "total nodes expanded for green: " << nodes_expanded_min << "\n";
+
+	cout << "avg nodes expanded per move for blue: " << nodes_expanded_max / 18 << "\n";
+	cout << "avg nodes expanded per move for green: " << nodes_expanded_min / 18 << "\n";
 }
 
-int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth) {
+int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth, int &nodes_expanded) {
 
 	// declare variables 
 	int result, x, y, bx, by; 
@@ -147,7 +169,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 		// all possible moves for max
 			if (board[x][y] == empty) {
 
-				cout << "x:" << x << ", y:" << y; 
+				//cout << "x:" << x << ", y:" << y; 
 				//cout << "empty if";
 				// pick a square that is empty and conquer it
 				if(maxPlayer) {
@@ -155,7 +177,8 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					bool left = false, right = false, top = false, bottom = false; 
 					//cout << "maxPlayer if";
 					board[x][y] = blue; 	
-					cout << " == blue" << "\n";		
+					nodes_expanded++; 
+					//cout << " == blue" << "\n";		
 					// check neighboring squares for possible death blitz move
 					// check left/right
 					if (x > 0) {
@@ -251,7 +274,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 			
 					// do this recursively
 					//cout << "depth before recursion" << depth; 
-					result = minimax(score, board, false, score[x][y], depth, depth-1);		
+					result = minimax(score, board, false, score[x][y], depth, depth-1, nodes_expanded);		
 
 					// undo move
 					board[x][y] = empty; 
@@ -276,7 +299,8 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					// pick a square that is empty and conquer it
 					bool min_left = false, min_right = false, min_top = false, min_bottom = false; 
 					board[x][y] = green; 
-					cout << " == green" << "\n";
+					nodes_expanded++; 
+					//cout << " == green" << "\n";
 					// check neighboring squares for possible death blitz move
 					// check left/right
 					if (x > 0) {
@@ -371,7 +395,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					}		
 				
 					// recursion!!!!!
-					result = minimax(score, board, true, score[x][y], depth, depth-1);
+					result = minimax(score, board, true, score[x][y], depth, depth-1, nodes_expanded);
 
 					//undo moves
 					board[x][y] = empty; 

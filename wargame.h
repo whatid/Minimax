@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <time.h>
 
 using namespace std; 
 #define infinity 1<<10
@@ -19,7 +20,7 @@ typedef enum square
 } square;
 
 // minimax bot 
-int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth); 
+int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth, int &nodes_expanded); 
 
 int maxOptimalX, maxOptimalY, minOptimalX, minOptimalY; 
 
