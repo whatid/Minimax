@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
 			// max moves
 			minimax(matrix, playerboard, true, 0, 3, 3);
 			playerboard[maxOptimalX][maxOptimalY] = blue; 
+
 			// print out the state of the board. 
 //		}
 //		else {
@@ -86,7 +87,6 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 	// declare variables 
 	int result, x, y, bx, by; 
 	bool finished = true; 
-	bool left = false, right = false, top = false, bottom = false; 
 	int maxScore = -infinity, minScore = infinity; 
 	
 
@@ -137,13 +137,15 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 		// all possible moves for max
 			if (board[x][y] == empty) {
 
-				cout << "x: " << x << "y: " << y << "\n"; 
+				cout << "x:" << x << ", y:" << y; 
 				//cout << "empty if";
 				// pick a square that is empty and conquer it
 				if(maxPlayer) {
+
+					bool left = false, right = false, top = false, bottom = false; 
 					//cout << "maxPlayer if";
 					board[x][y] = blue; 	
-					cout << "blue";		
+					cout << " == blue" << "\n";		
 					// check neighboring squares for possible death blitz move
 					// check left/right
 					if (x > 0) {
@@ -189,7 +191,53 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 							 	}
 							 }
 						}
-					}		
+					}	
+					else if (y > 0) {
+						if(board[x][y-1] == blue) {
+							 if (x < 5) {
+							 	if (board[x+1][y] == green) {
+							 		board[x+1][y] = blue; 
+							 		right = true; 
+							 	}
+							 }
+							 if (x > 0) {
+							 	if (board[x-1][y] == green) {
+							 		board[x-1][y] = blue; 
+							 		left = true; 
+							 	}
+							 }
+							 if (y < 5) {
+							 	if (board[x][y+1] == green){
+							 		board[x][y+1] = blue; 
+							 		top = true; 
+							 	}
+							 }
+						}
+					}	
+					else {
+						if (y < 5) {
+							if(board[x][y+1] == blue) {
+								if (x < 5) {
+							 		if (board[x+1][y] == green) {
+							 			board[x+1][y] = blue; 
+							 			right = true; 
+							 		}
+							 	}
+							 	if (x > 0) {
+							 		if (board[x-1][y] == green) {
+							 			board[x-1][y] = blue; 
+							 			left = true; 
+							 		}
+								}
+								if (y > 0) {
+								 	if (board[x][y-1] == green){
+								 		board[x][y-1] = blue; 
+								 		bottom = true; 
+								 	}
+								}
+							}
+						}	
+					}	
 			
 					// do this recursively
 					//cout << "depth before recursion" << depth; 
@@ -216,8 +264,9 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 				else {
 
 					// pick a square that is empty and conquer it
+					bool min_left = false, min_right = false, min_top = false, min_bottom = false; 
 					board[x][y] = green; 
-					cout << "green";
+					cout << " == green" << "\n";
 					// check neighboring squares for possible death blitz move
 					// check left/right
 					if (x > 0) {
@@ -225,19 +274,19 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 							 if (x < 5) {
 							 	if (board[x+1][y] == blue) {
 							 		board[x+1][y] = green; 
-							 		right = true; 
+							 		min_right = true; 
 							 	}
 							 }
 							 if (y > 0) {
 							 	if (board[x][y-1] == blue) {
 							 		board[x][y-1] = green; 
-							 		bottom = true; 
+							 		min_bottom = true; 
 							 	}
 							 }
 							 if (y < 5) {
 							 	if (board[x][y+1] == blue){
 							 		board[x][y+1] = green; 
-							 		top = true; 
+							 		min_top = true; 
 							 	}
 							 }
 						}
@@ -247,22 +296,68 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 							 if (x > 0) {
 							 	if (board[x-1][y] == blue) {
 							 		board[x-1][y] = green; 
-							 		left = true; 
+							 		min_left = true; 
 							 	}
 							 }
 							 if (y > 0) {
 							 	if (board[x][y-1] == blue) {
 							 		board[x][y-1] = green; 
-							 		bottom = true; 
+							 		min_bottom = true; 
 							 	}
 							 }
 							 if (y < 5) {
 							 	if (board[x][y+1] == blue){
 							 		board[x][y+1] = green; 
-							 		top = true; 
+							 		min_top = true; 
 							 	}
 							 }
 						}
+					}	
+					else if (y > 0) {
+						if(board[x][y-1] == green) {
+							 if (x < 5) {
+							 	if (board[x+1][y] == blue) {
+							 		board[x+1][y] = green; 
+							 		min_right = true; 
+							 	}
+							 }
+							 if (x > 0) {
+							 	if (board[x-1][y] == blue) {
+							 		board[x-1][y] = green; 
+							 		min_left = true; 
+							 	}
+							 }
+							 if (y < 5) {
+							 	if (board[x][y+1] == blue){
+							 		board[x][y+1] = green; 
+							 		min_top = true; 
+							 	}
+							 }
+						}
+					}
+					else {
+						if (y < 5) {
+							if(board[x][y+1] == green) {
+								if (x < 5) {
+							 		if (board[x+1][y] == blue) {
+							 			board[x+1][y] = green; 
+							 			min_right = true; 
+							 		}
+							 	}
+							 	if (x > 0) {
+							 		if (board[x-1][y] == blue) {
+							 			board[x-1][y] = green; 
+							 			min_left = true; 
+							 		}
+								}
+								if (y > 0) {
+								 	if (board[x][y-1] == blue){
+								 		board[x][y-1] = green; 
+								 		min_bottom = true; 
+								 	}
+								}
+							}
+						}	
 					}		
 				
 					// recursion!!!!!
@@ -270,10 +365,10 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 
 					//undo moves
 					board[x][y] = empty; 
-					if (left) board[x-1][y] = blue; 
-					if (right) board[x+1][y] = blue; 
-					if (top) board[x][y+1] = blue; 
-					if (bottom) board[x][y-1] = blue; 
+					if (min_left) board[x-1][y] = blue; 
+					if (min_right) board[x+1][y] = blue; 
+					if (min_top) board[x][y+1] = blue; 
+					if (min_bottom) board[x][y-1] = blue; 
 
 					if (result < minScore) {
 						minScore = result;  
