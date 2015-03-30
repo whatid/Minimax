@@ -45,21 +45,21 @@ int main(int argc, char *argv[]) {
 	// blue moves first 
 
 	// test 
-//	for (int moves = 0; moves < 36; moves++){
-//		if (moves % 2 == 0) {
+	for (int moves = 0; moves < 36; moves++){
+		if (moves % 2 == 0) {
 			// max moves
 			minimax(matrix, playerboard, true, 0, 3, 3);
 			playerboard[maxOptimalX][maxOptimalY] = blue; 
 
 			// print out the state of the board. 
-//		}
-//		else {
+		}
+		else {
 			// min moves
-	//		minimax(matrix, playerboard, false, 0, 3, 3); 
+			minimax(matrix, playerboard, true, 0, 3, 3); 
 //			cout<<minOptimalX<<minOptimalY; 
-//			playerboard[minOptimalX][minOptimalY] = green; 
-//		}
-//	}
+			playerboard[maxOptimalX][maxOptimalY] = green; 
+		}
+	}
 
 	
 
@@ -78,8 +78,18 @@ int main(int argc, char *argv[]) {
 		}
 		cout << "\n";
 	}
-	
+	int max_score = 0, min_score = 0; 
+	for (int mx = 0; mx < 6; mx++) {
+		for (int my = 0; my < 6; my++) {
+			if (playerboard[mx][my] == blue)
+				max_score += matrix[mx][my]; 
+			if (playerboard[mx][my] == green)
+				min_score += matrix[mx][my]; 	
+		}
+	}
 
+	cout << "blue score: " << max_score << "\n"; 
+	cout << "green score: " << min_score << "\n"; 
 }
 
 int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth) {
