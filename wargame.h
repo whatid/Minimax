@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <time.h>
+#include <algorithm>
 
 using namespace std; 
 #define infinity 1<<10
@@ -23,7 +24,7 @@ typedef enum square
 int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth, int &nodes_expanded); 
 
 // alphabeta bot 
-int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded);
+int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded, int n);
 
 int maxOptimalX, maxOptimalY, minOptimalX, minOptimalY; 
 
