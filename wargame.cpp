@@ -58,13 +58,13 @@ int main(int argc, char *argv[]) {
 		if (moves % 2 == 0) {
 			// max moves
 			start = clock(); 
-			//minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_max);
-			alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 3, 3, nodes_expanded_max);
+			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_max);
+			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_max);
 		
 			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
 			time_per_move += duration; 
 
-			cout << maxOptimalX << maxOptimalY << "\n"; 
+		//	cout << maxOptimalX << maxOptimalY << "\n"; 
 
 			playerboard[maxOptimalX][maxOptimalY] = blue; 
 
@@ -73,12 +73,12 @@ int main(int argc, char *argv[]) {
 			// min moves
 			start = clock(); 
 			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
-			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 3, 3, nodes_expanded_min);
+			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_min);
 		
 			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
 			time_per_move += duration; 
 
-			cout << maxOptimalX << maxOptimalY << "\n"; 
+		//	cout << maxOptimalX << maxOptimalY << "\n"; 
 
 			playerboard[maxOptimalX][maxOptimalY] = green; 
 		}
@@ -296,7 +296,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (bottom) board[x][y-1] = green; 
 
 					// check if my value is greater than any of the bestValues found so far. 
-					if (result > maxScore) {
+					if (result >= maxScore) {
 						maxScore = result;  
 						if (depth == maxDepth) {
 							// place my move on the board. 
@@ -415,7 +415,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (min_top) board[x][y+1] = blue; 
 					if (min_bottom) board[x][y-1] = blue; 
 
-					if (result < minScore) {
+					if (result <= minScore) {
 						minScore = result;  
 						if (depth == maxDepth) {
 							// place move on the board
@@ -611,7 +611,7 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta
 					
 
 					// check if my value is greater than any of the bestValues found so far. 
-					if (maxScore > alpha) {
+					if (maxScore >= alpha) {
 						alpha = maxScore;  
 						if (depth == maxDepth) {
 							// place my move on the board. 
@@ -733,7 +733,7 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta
 					if (min_top) board[x][y+1] = blue; 
 					if (min_bottom) board[x][y-1] = blue; 
 
-					if (minScore < beta) {
+					if (minScore <= beta) {
 						beta = minScore; 
 						if (depth == maxDepth) {
 							// place move on the board
