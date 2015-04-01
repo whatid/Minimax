@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 		else {
 			// min moves
 			start = clock(); 
-		//	minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
+			//minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
 			alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 3, 3, nodes_expanded_min);
 		
 			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
@@ -444,7 +444,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded) {
 
 	// declare variables 
-	int x, y, bx, by; 
+	int result, x, y, bx, by; 
 	bool finished = true; 
 	int maxScore = -infinity, minScore = infinity; 
 	
@@ -608,6 +608,9 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 					if (top) board[x][y+1] = green; 
 					if (bottom) board[x][y-1] = green; 
 
+					if (beta <= alpha)
+						return maxScore;
+
 					// check if my value is greater than any of the bestValues found so far. 
 					if (maxScore > alpha) {
 						alpha = maxScore;  
@@ -618,8 +621,7 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 							maxOptimalY = y; 
 						}	
 					}	
-					if (beta <= alpha)
-						return maxScore; 
+						 
 				}
 				else {
 
@@ -730,8 +732,11 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 					if (min_top) board[x][y+1] = blue; 
 					if (min_bottom) board[x][y-1] = blue; 
 
+					if (beta <= alpha)
+						return minScore;
+
 					if (minScore < beta) {
-						beta = minScore;  
+						beta = minScore; 
 						if (depth == maxDepth) {
 							// place move on the board
 							//cout << "min move";
@@ -740,8 +745,8 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 							//cout<<minOptimalX<<minOptimalY; 
 						}
 					}
-					if (beta <= alpha)
-						return minScore; 
+					
+							 
 				}
 			}
 		}
