@@ -24,7 +24,7 @@ typedef enum square
 int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int maxDepth, int depth, int &nodes_expanded); 
 
 // alphabeta bot 
-int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded);
+int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded);
 
 int maxOptimalX, maxOptimalY, minOptimalX, minOptimalY; 
 

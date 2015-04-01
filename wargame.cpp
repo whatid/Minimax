@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
 		else {
 			// min moves
 			start = clock(); 
-			//minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
-			alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 3, 3, nodes_expanded_min);
+			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
+			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 3, 3, nodes_expanded_min);
 		
 			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
 			time_per_move += duration; 
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 		cout << "\n";
 	}
 
-	/*
+	
 	int max_score = 0, min_score = 0; 
 	for (int mx = 0; mx < 6; mx++) {
 		for (int my = 0; my < 6; my++) {
@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "avg nodes expanded per move for blue: " << nodes_expanded_max / 18 << "\n";
 	cout << "avg nodes expanded per move for green: " << nodes_expanded_min / 18 << "\n";
-	*/
+	
 
 	
 }
@@ -441,7 +441,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 	}
 }
 
-int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded) {
+int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta, int leaf_node, int maxDepth, int depth, int &nodes_expanded) {
 
 	// declare variables 
 	int result, x, y, bx, by; 
@@ -608,8 +608,7 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 					if (top) board[x][y+1] = green; 
 					if (bottom) board[x][y-1] = green; 
 
-					if (beta <= alpha)
-						return maxScore;
+					
 
 					// check if my value is greater than any of the bestValues found so far. 
 					if (maxScore > alpha) {
@@ -621,6 +620,8 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 							maxOptimalY = y; 
 						}	
 					}	
+					if (beta <= alpha)
+						return maxScore;
 						 
 				}
 				else {
@@ -732,9 +733,6 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 					if (min_top) board[x][y+1] = blue; 
 					if (min_bottom) board[x][y-1] = blue; 
 
-					if (beta <= alpha)
-						return minScore;
-
 					if (minScore < beta) {
 						beta = minScore; 
 						if (depth == maxDepth) {
@@ -745,7 +743,8 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 							//cout<<minOptimalX<<minOptimalY; 
 						}
 					}
-					
+					if (beta <= alpha)
+						return minScore;
 							 
 				}
 			}
