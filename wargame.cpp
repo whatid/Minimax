@@ -631,11 +631,12 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 
 						//	cout << "found x: " << x << " ,y: " << y << "\n"; 
 							//cout<<minOptimalX<<minOptimalY; 
-						if (alpha >= beta) {
-						return alpha; 
-						}
+						
 						
 					}
+					if (alpha >= beta) {
+						return alpha; 
+						}
 					
 					
 				}
@@ -780,12 +781,12 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int &alpha, int &be
 						
 						//	cout << "found x: " << x << " ,y: " << y << "\n"; 
 							//cout<<minOptimalX<<minOptimalY; 
-								if (alpha >= beta) {
-									return beta; 
-							}
+							
 							
 						}
-						
+							if (alpha >= beta) {
+									return beta; 
+							}
 
 					}
 				}
