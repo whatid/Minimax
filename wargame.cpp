@@ -3,6 +3,9 @@
 int main(int argc, char *argv[]) {
 
 	// open file 
+	ofstream outfile; 
+	outfile.open("Westerplatte_solutions.txt");
+
 	ifstream file (argv[1]);
 
 	if (!file) {
@@ -45,86 +48,112 @@ int main(int argc, char *argv[]) {
 	// blue moves first 
 	
 
-	clock_t start; 
-	double duration; 
-	double time_per_move; 
-	int nodes_expanded_max = 0, nodes_expanded_min = 0; 
-	int talpha = -infinity; 
-	int tbeta = infinity; 
+	for (int runtime = 0; runtime < 4; runtime++)
+	{
+
+		if (runtime == 0)
+			outfile << "minimax(blue) vs. minimax(green) \n";
+		else if (runtime == 1)
+			outfile << "minimax(blue) vs. alphabeta(green) \n";
+		else if (runtime == 2)
+			outfile << "alphabeta(blue) vs. minimax(green) \n"; 
+		else 
+			outfile << "alphabeta(blue) vs. alphabeta(green) \n"; 
+
+		clock_t start; 
+		double duration = 0; 
+		double time_per_move = 0; 
+		int nodes_expanded_max = 0, nodes_expanded_min = 0; 
+		int talpha = -infinity; 
+		int tbeta = infinity; 
 
 
-	// test 
-	for (int moves = 0; moves < 36; moves++){
-		if (moves % 2 == 0) {
-			// max moves
-			start = clock(); 
-			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_max);
-			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_max);
+		// test 
+		for (int moves = 0; moves < 36; moves++){
+			if (moves % 2 == 0) {
+				// max moves
+				start = clock(); 
+				if (runtime == 0 || runtime == 1)
+				minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_max);
+
+				if (runtime == 2 || runtime == 3)
+				alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_max);
+			
+				duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
+				time_per_move += duration; 
+
+			//	cout << maxOptimalX << maxOptimalY << "\n"; 
+
+				playerboard[maxOptimalX][maxOptimalY] = blue; 
+
+			}
+			else {
+				// min moves
+				start = clock(); 
+
+				if (runtime == 0 || runtime == 2)
+				minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
+
+				if (runtime == 1 || runtime == 3)
+				alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_min);
+			
+				duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
+				time_per_move += duration; 
+
+			//	cout << maxOptimalX << maxOptimalY << "\n"; 
+
+				playerboard[maxOptimalX][maxOptimalY] = green; 
+			}
+		}
+
+
+
+		//cout << "no segfault in minimax" << endl; 
+
+
+		// print out the state of the board. 
+		for (int x = 0; x < 6; x++) {
+			for (int y = 0; y < 6; y++) {
+				if (playerboard[x][y] == blue)
+					outfile << "blue  "; 
+				else if (playerboard[x][y] == green) 
+					outfile << "green ";
+				else 
+					outfile << "empty ";
+			}
+			outfile << "\n";
+		}
+
 		
-			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
-			time_per_move += duration; 
-
-		//	cout << maxOptimalX << maxOptimalY << "\n"; 
-
-			playerboard[maxOptimalX][maxOptimalY] = blue; 
-
+		int max_score = 0, min_score = 0; 
+		for (int mx = 0; mx < 6; mx++) {
+			for (int my = 0; my < 6; my++) {
+				if (playerboard[mx][my] == blue)
+					max_score += matrix[mx][my]; 
+				if (playerboard[mx][my] == green)
+					min_score += matrix[mx][my]; 	
+			}
 		}
-		else {
-			// min moves
-			start = clock(); 
-			minimax(matrix, playerboard, true, 0, 3, 3, nodes_expanded_min); 
-			//alphabeta(matrix, playerboard, true, talpha, tbeta, 0, 4, 4, nodes_expanded_min);
-		
-			duration = (clock() - start) / (double) CLOCKS_PER_SEC;  
-			time_per_move += duration; 
 
-		//	cout << maxOptimalX << maxOptimalY << "\n"; 
+		outfile << "blue score: " << max_score << "\n"; 
+		outfile << "green score: " << min_score << "\n"; 
 
-			playerboard[maxOptimalX][maxOptimalY] = green; 
+		outfile << "average time per move: " << (time_per_move/36) * 1000 << " milliseconds" << "\n";
+
+		outfile << "total nodes expanded for blue: " << nodes_expanded_max << "\n";
+		outfile << "total nodes expanded for green: " << nodes_expanded_min << "\n";
+
+		outfile << "avg nodes expanded per move for blue: " << nodes_expanded_max / 18 << "\n";
+		outfile << "avg nodes expanded per move for green: " << nodes_expanded_min / 18 << "\n";
+
+		outfile << "\n";
+
+		for (int x = 0; x < 6; x++) {
+			for (int y = 0; y < 6; y++) {
+				playerboard[x][y] = empty; 	 
+			}
 		}
-	}
-
-
-
-	//cout << "no segfault in minimax" << endl; 
-
-
-	// print out the state of the board. 
-	for (int x = 0; x < 6; x++) {
-		for (int y = 0; y < 6; y++) {
-			if (playerboard[x][y] == blue)
-				cout << "blue  "; 
-			else if (playerboard[x][y] == green) 
-				cout << "green ";
-			else 
-				cout<<"empty ";
-		}
-		cout << "\n";
-	}
-
-	
-	int max_score = 0, min_score = 0; 
-	for (int mx = 0; mx < 6; mx++) {
-		for (int my = 0; my < 6; my++) {
-			if (playerboard[mx][my] == blue)
-				max_score += matrix[mx][my]; 
-			if (playerboard[mx][my] == green)
-				min_score += matrix[mx][my]; 	
-		}
-	}
-
-	cout << "blue score: " << max_score << "\n"; 
-	cout << "green score: " << min_score << "\n"; 
-
-	cout << "average time per move: " << (time_per_move/36) * 1000 << " milliseconds" << "\n";
-
-	cout << "total nodes expanded for blue: " << nodes_expanded_max << "\n";
-	cout << "total nodes expanded for green: " << nodes_expanded_min << "\n";
-
-	cout << "avg nodes expanded per move for blue: " << nodes_expanded_max / 18 << "\n";
-	cout << "avg nodes expanded per move for green: " << nodes_expanded_min / 18 << "\n";
-	
-
+	}	
 	
 }
 
