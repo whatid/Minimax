@@ -4,7 +4,7 @@ int main(int argc, char *argv[]) {
 
 	// open file 
 	ofstream outfile; 
-	outfile.open("Westerplatte_solutions.txt");
+	outfile.open("Smolensk_solutions.txt");
 
 	ifstream file (argv[1]);
 
@@ -199,7 +199,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 			}
 			// should be the opposite 
 			//cout << "depth is 0"; 
-			if (!maxPlayer) {
+			if (maxPlayer) {
 				return (curMax-curMin);
 			}
 			else 
@@ -325,7 +325,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (bottom) board[x][y-1] = green; 
 
 					// check if my value is greater than any of the bestValues found so far. 
-					if (result >= maxScore) {
+					if (result > maxScore) {
 						maxScore = result;  
 						if (depth == maxDepth) {
 							// place my move on the board. 
@@ -444,7 +444,7 @@ int minimax(int ** score, square ** board, bool maxPlayer, int leaf_node, int ma
 					if (min_top) board[x][y+1] = blue; 
 					if (min_bottom) board[x][y-1] = blue; 
 
-					if (result <= minScore) {
+					if (result < minScore) {
 						minScore = result;  
 						if (depth == maxDepth) {
 							// place move on the board
@@ -512,7 +512,7 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta
 			}
 			// should be the opposite 
 			//cout << "depth is 0"; 
-			if (!maxPlayer) {
+			if (maxPlayer) {
 				return (curMax-curMin);
 			}
 			else 
@@ -649,8 +649,10 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta
 							maxOptimalY = y; 
 						}	
 					}	
+					
 					if (beta <= alpha)
 						return maxScore;
+					
 						 
 				}
 				else {
@@ -772,8 +774,9 @@ int alphabeta(int ** score, square ** board, bool maxPlayer, int alpha, int beta
 							//cout<<minOptimalX<<minOptimalY; 
 						}
 					}
+					
 					if (beta <= alpha)
-						return minScore;
+						return minScore;	
 							 
 				}
 			}
